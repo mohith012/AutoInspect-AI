@@ -1,0 +1,39 @@
+# Stage 2 — Vehicle Part Detection
+# data.yaml for Carparts-Seg (Ultralytics)
+# Source: https://docs.ultralytics.com/datasets/segment/carparts-seg/
+# License: AGPL-3.0
+
+path: C:/Users/sango/OneDrive/Desktop/Car project/stage2_vehicle_part_detection/data
+
+train: images/train
+val:   images/val
+test:  images/test
+
+nc: 23
+
+# NOTE: Class 18 'object' is a catch-all with only 10 instances.
+# It will be retained in training but excluded from final inference output.
+names:
+  0:  back_bumper
+  1:  back_door
+  2:  back_glass
+  3:  back_left_door
+  4:  back_left_light
+  5:  back_light
+  6:  back_right_door
+  7:  back_right_light
+  8:  front_bumper
+  9:  front_door
+  10: front_glass
+  11: front_left_door
+  12: front_left_light
+  13: front_light
+  14: front_right_door
+  15: front_right_light
+  16: hood
+  17: left_mirror
+  18: object
+  19: right_mirror
+  20: tailgate
+  21: trunk
+  22: wheel

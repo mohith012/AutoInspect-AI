@@ -1,0 +1,23 @@
+# Datasets and compressed files
+CarDD_release.zip
+CarDD_release/
+cardd_yolo/
+data/
+
+# Python caches and compiled files
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Virtual environments
+venv/
+env/
+.env
+
+# Large model weights (optional, uncomment if > 100MB)
+# *.pt

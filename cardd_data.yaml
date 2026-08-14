@@ -1,0 +1,6 @@
+train: C:\Users\sango\OneDrive\Desktop\Car project\cardd_yolo/train/images
+val:   C:\Users\sango\OneDrive\Desktop\Car project\cardd_yolo/val/images
+test:  C:\Users\sango\OneDrive\Desktop\Car project\cardd_yolo/test/images
+
+nc: 6
+names: ["dent", "scratch", "crack", "glass_shatter", "lamp_broken", "tire_flat"]

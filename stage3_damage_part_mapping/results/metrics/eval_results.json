@@ -1,0 +1,162 @@
+{
+  "metrics": {
+    "images_tested": 30,
+    "total_raw_damages_detected": 56,
+    "successfully_mapped": 25,
+    "unmapped_filtered_out": 31,
+    "mapping_rate": 44.6,
+    "avg_pipeline_time_ms": 240.2
+  },
+  "details": [
+    {
+      "image": "000012.jpg",
+      "damage": "tire_flat",
+      "damaged_part": "tire",
+      "mapping_score": 0.733
+    },
+    {
+      "image": "000042.jpg",
+      "damage": "glass_shatter",
+      "damaged_part": "windshield",
+      "mapping_score": 0.961
+    },
+    {
+      "image": "000042.jpg",
+      "damage": "dent",
+      "damaged_part": "tire",
+      "mapping_score": 0.617
+    },
+    {
+      "image": "000042.jpg",
+      "damage": "dent",
+      "damaged_part": "hood",
+      "mapping_score": 0.647
+    },
+    {
+      "image": "000042.jpg",
+      "damage": "scratch",
+      "damaged_part": "hood",
+      "mapping_score": 0.924
+    },
+    {
+      "image": "000042.jpg",
+      "damage": "dent",
+      "damaged_part": "hood",
+      "mapping_score": 0.915
+    },
+    {
+      "image": "000057.jpg",
+      "damage": "tire_flat",
+      "damaged_part": "front_bumper",
+      "mapping_score": 0.957
+    },
+    {
+      "image": "000082.jpg",
+      "damage": "scratch",
+      "damaged_part": "rear_bumper",
+      "mapping_score": 0.865
+    },
+    {
+      "image": "000128.jpg",
+      "damage": "crack",
+      "damaged_part": "tire",
+      "mapping_score": 0.72
+    },
+    {
+      "image": "000128.jpg",
+      "damage": "scratch",
+      "damaged_part": "tire",
+      "mapping_score": 0.639
+    },
+    {
+      "image": "000128.jpg",
+      "damage": "dent",
+      "damaged_part": "tire",
+      "mapping_score": 0.638
+    },
+    {
+      "image": "000152.jpg",
+      "damage": "dent",
+      "damaged_part": "front_bumper",
+      "mapping_score": 0.676
+    },
+    {
+      "image": "000152.jpg",
+      "damage": "scratch",
+      "damaged_part": "front_bumper",
+      "mapping_score": 0.629
+    },
+    {
+      "image": "000152.jpg",
+      "damage": "lamp_broken",
+      "damaged_part": "front_bumper",
+      "mapping_score": 0.63
+    },
+    {
+      "image": "000175.jpg",
+      "damage": "glass_shatter",
+      "damaged_part": "rear_windshield",
+      "mapping_score": 0.834
+    },
+    {
+      "image": "000191.jpg",
+      "damage": "lamp_broken",
+      "damaged_part": "headlight",
+      "mapping_score": 0.946
+    },
+    {
+      "image": "000191.jpg",
+      "damage": "dent",
+      "damaged_part": "front_bumper",
+      "mapping_score": 0.696
+    },
+    {
+      "image": "000191.jpg",
+      "damage": "crack",
+      "damaged_part": "front_bumper",
+      "mapping_score": 0.611
+    },
+    {
+      "image": "000191.jpg",
+      "damage": "dent",
+      "damaged_part": "door",
+      "mapping_score": 0.675
+    },
+    {
+      "image": "000191.jpg",
+      "damage": "crack",
+      "damaged_part": "front_bumper",
+      "mapping_score": 0.616
+    },
+    {
+      "image": "000191.jpg",
+      "damage": "dent",
+      "damaged_part": "headlight",
+      "mapping_score": 0.688
+    },
+    {
+      "image": "000204.jpg",
+      "damage": "glass_shatter",
+      "damaged_part": "rear_windshield",
+      "mapping_score": 0.886
+    },
+    {
+      "image": "000233.jpg",
+      "damage": "glass_shatter",
+      "damaged_part": "windshield",
+      "mapping_score": 0.994
+    },
+    {
+      "image": "000237.jpg",
+      "damage": "dent",
+      "damaged_part": "door",
+      "mapping_score": 0.972
+    },
+    {
+      "image": "000320.jpg",
+      "damage": "glass_shatter",
+      "damaged_part": "rear_windshield",
+      "mapping_score": 0.148
+    }
+  ]
+}

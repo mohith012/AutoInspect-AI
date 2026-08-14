@@ -1,0 +1,44 @@
+# class_mapping.yaml
+# Stage 2 — Vehicle Part Detection (AutoInspect AI)
+# Maps Carparts-Seg dataset classes → AutoInspect project classes
+
+# IMPORTANT NOTES:
+# 1. 'fender' is absent from all 3 candidate datasets investigated.
+#    Fender damage from Model 1 will fall back to nearest detectable part.
+# 2. 'grille' is absent from all 3 candidate datasets investigated.
+# 3. Class 18 'object' is a catch-all with only 10 training instances.
+#    It is EXCLUDED from final inference output.
+# 4. The dataset uses 'wheel' — we map this to 'tire' in project terminology.
+# 5. Doors are split positionally (front_left_door, back_right_door, etc.)
+#    All door variants map to the project class 'door'.
+# 6. Lights are split positionally (front_left_light, back_right_light, etc.)
+#    Front lights → headlight, Back lights → taillight.
+
+mapping:
+  back_bumper:        rear_bumper
+  front_bumper:       front_bumper
+  back_door:          door
+  front_door:         door
+  back_left_door:     door
+  back_right_door:    door
+  front_left_door:    door
+  front_right_door:   door
+  back_glass:         rear_windshield
+  front_glass:        windshield
+  back_left_light:    taillight
+  back_right_light:   taillight
+  back_light:         taillight
+  front_left_light:   headlight
+  front_right_light:  headlight
+  front_light:        headlight
+  hood:               hood
+  left_mirror:        side_mirror
+  right_mirror:       side_mirror
+  tailgate:           tailgate
+  trunk:              trunk
+  wheel:              tire
+  object:             EXCLUDED
+
+missing_classes:
+  fender: "Not present in any of the 3 candidate datasets. Cannot be detected by Model 2."
+  grille: "Not present in any of the 3 candidate datasets. Cannot be detected by Model 2."
