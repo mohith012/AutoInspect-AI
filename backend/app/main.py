@@ -1,4 +1,4 @@
-from fastapi import FastAPI, UploadFile, File
+from fastapi import FastAPI, UploadFile, File, Form
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import JSONResponse
@@ -39,7 +39,12 @@ os.makedirs(UPLOAD_DIR, exist_ok=True)
 os.makedirs(RESULTS_DIR, exist_ok=True)
 
 @app.post("/api/analyze")
-async def analyze_image(file: UploadFile = File(...)):
+async def analyze_image(
+    file: UploadFile = File(...),
+    vehicle_make: str = Form(None),
+    vehicle_model: str = Form(None),
+    vehicle_year: int = Form(None)
+):
     try:
         # Save uploaded file
         file_ext = os.path.splitext(file.filename)[1]
@@ -50,8 +55,16 @@ async def analyze_image(file: UploadFile = File(...)):
         with open(upload_path, "wb") as buffer:
             shutil.copyfileobj(file.file, buffer)
             
+        vehicle_info = None
+        if vehicle_make and vehicle_model:
+            vehicle_info = {
+                "make": vehicle_make,
+                "model": vehicle_model,
+                "year": vehicle_year or 2022
+            }
+            
         # Run AI Pipeline
-        result_json = analyze_vehicle_damage(upload_path, save_crops=False)
+        result_json = analyze_vehicle_damage(upload_path, save_crops=False, vehicle_info=vehicle_info)
         
         # Generate Visualization
         vis_filename = f"{unique_id}_annotated.jpg"

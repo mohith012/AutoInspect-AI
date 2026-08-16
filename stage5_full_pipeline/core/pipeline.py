@@ -66,7 +66,13 @@ if stage6_path not in sys.path:
 import decision_engine
 engine = decision_engine.DecisionEngine()
 
-def analyze_vehicle_damage(image_path: str, save_crops=True):
+stage7_path = os.path.join(project_root, "stage7_cost_estimation", "src")
+if stage7_path not in sys.path:
+    sys.path.insert(0, stage7_path)
+import cost_estimator
+cost_engine = cost_estimator.CostEstimator()
+
+def analyze_vehicle_damage(image_path: str, save_crops=True, vehicle_info: dict = None):
     """
     Master pipeline:
     1. Model 1 (Damages)
@@ -74,6 +80,7 @@ def analyze_vehicle_damage(image_path: str, save_crops=True):
     3. Stage 3 (Damage-to-Part Mapping)
     4. Model 4 (Severity on each mapped damage crop)
     5. Stage 6 (Decision Engine)
+    6. Stage 7 (Cost Estimator)
     """
     t_start = time.time()
     
@@ -83,9 +90,9 @@ def analyze_vehicle_damage(image_path: str, save_crops=True):
     
     image_name = os.path.basename(image_path)
     
-    # 1. Run Damage Detection
+    # 1. Run Damage Detection (Lowered threshold to catch difficult shatters like side windows)
     t_m1_start = time.time()
-    damages = detect_damages(image_path, conf_threshold=0.25)
+    damages = detect_damages(image_path, conf_threshold=0.15)
     t_m1_end = time.time()
     
     # 2. Run Part Detection
@@ -159,6 +166,36 @@ def analyze_vehicle_damage(image_path: str, save_crops=True):
     decision_payload = engine.evaluate_vehicle(final_damages)
     t_de_end = time.time()
     
+    # 6. Cost Estimator
+    t_ce_start = time.time()
+    if vehicle_info is None:
+        vehicle_info = {"make": "Generic", "model": "Hatchback", "year": 2022}
+        
+    total_min = 0
+    total_max = 0
+    overall_quality = "high"
+    
+    for dmg in decision_payload["damages"]:
+        cost_res = cost_engine.estimate_damage_cost(vehicle_info, dmg)
+        dmg["cost_estimate"] = cost_res
+        
+        if cost_res["price_data_quality"] in ["low", "unavailable"]:
+            overall_quality = cost_res["price_data_quality"]
+        elif cost_res["price_data_quality"] == "medium" and overall_quality == "high":
+            overall_quality = "medium"
+            
+        if "total_cost" in cost_res:
+            total_min += cost_res["total_cost"]["min"]
+            total_max += cost_res["total_cost"]["max"]
+            
+    decision_payload["total_cost_estimate"] = {
+        "min": total_min,
+        "max": total_max,
+        "currency": "INR"
+    }
+    decision_payload["price_data_quality"] = overall_quality
+    t_ce_end = time.time()
+    
     # Performance metrics
     perf = {
         "Model 1 (ms)": round((t_m1_end - t_m1_start) * 1000, 1),
@@ -166,13 +203,17 @@ def analyze_vehicle_damage(image_path: str, save_crops=True):
         "Mapping (ms)": round((t_map_end - t_map_start) * 1000, 1),
         "Model 3 (ms)": round((t_m3_end - t_m3_start) * 1000, 1),
         "Decision (ms)": round((t_de_end - t_de_start) * 1000, 1),
-        "Total (ms)": round((t_de_end - t_start) * 1000, 1)
+        "Cost (ms)": round((t_ce_end - t_ce_start) * 1000, 1),
+        "Total (ms)": round((t_ce_end - t_start) * 1000, 1)
     }
     
     return {
         "image": image_name,
+        "vehicle": vehicle_info,
         "performance": perf,
         "overall_recommendation": decision_payload["overall_recommendation"],
+        "total_cost_estimate": decision_payload["total_cost_estimate"],
+        "price_data_quality": decision_payload["price_data_quality"],
         "damages": decision_payload["damages"]
     }
 
