@@ -1,5 +1,15 @@
-import { useState } from 'react'
-import { UploadCloud, CheckCircle, AlertTriangle, AlertCircle, Loader2 } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { UploadCloud, CheckCircle, AlertTriangle, AlertCircle, Loader2, Car } from 'lucide-react'
+
+const VEHICLES = [
+  { id: 'generic', label: "Generic Hatchback (Fallback)", make: "Generic", model: "Hatchback", year: 2022 },
+  { id: 'swift', label: "Maruti Suzuki Swift", make: "Maruti Suzuki", model: "Swift", year: 2022 },
+  { id: 'wagonr', label: "Maruti Suzuki WagonR", make: "Maruti Suzuki", model: "WagonR", year: 2022 },
+  { id: 'baleno', label: "Maruti Suzuki Baleno", make: "Maruti Suzuki", model: "Baleno", year: 2022 },
+  { id: 'nexon', label: "Tata Nexon (Compact SUV)", make: "Tata", model: "Nexon", year: 2022 },
+  { id: 'creta', label: "Hyundai Creta (SUV)", make: "Hyundai", model: "Creta", year: 2022 },
+  { id: 'i20', label: "Hyundai i20", make: "Hyundai", model: "i20", year: 2022 },
+];
 
 function App() {
   const [file, setFile] = useState(null)
@@ -7,16 +17,39 @@ function App() {
   const [loading, setLoading] = useState(false)
   const [result, setResult] = useState(null)
   const [error, setError] = useState(null)
+  const [selectedVehicle, setSelectedVehicle] = useState(VEHICLES[0])
 
   const handleFileChange = (e) => {
     const selected = e.target.files[0]
-    if (selected) {
+    handleFileSelection(selected)
+  }
+
+  const handleFileSelection = (selected) => {
+    if (selected && selected.type.startsWith('image/')) {
       setFile(selected)
       setPreview(URL.createObjectURL(selected))
       setResult(null)
       setError(null)
     }
   }
+
+  useEffect(() => {
+    const handlePaste = (e) => {
+      const items = e.clipboardData?.items;
+      if (!items) return;
+      
+      for (let i = 0; i < items.length; i++) {
+        if (items[i].type.indexOf('image') !== -1) {
+          const blob = items[i].getAsFile();
+          handleFileSelection(blob);
+          break;
+        }
+      }
+    };
+
+    window.addEventListener('paste', handlePaste);
+    return () => window.removeEventListener('paste', handlePaste);
+  }, []);
 
   const handleUpload = async () => {
     if (!file) return
@@ -26,6 +59,9 @@ function App() {
     
     const formData = new FormData()
     formData.append('file', file)
+    formData.append('vehicle_make', selectedVehicle.make)
+    formData.append('vehicle_model', selectedVehicle.model)
+    formData.append('vehicle_year', selectedVehicle.year)
     
     try {
       const response = await fetch('http://localhost:8000/api/analyze', {
@@ -77,12 +113,32 @@ function App() {
       <main className="flex-1 w-full grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
         
         {/* Upload Column */}
-        <div className="glass-panel p-8 w-full flex flex-col items-center justify-center min-h-[400px]">
+        <div className="flex flex-col gap-6">
+          <div className="glass-panel p-6 flex flex-col gap-3">
+            <label className="text-sm font-bold text-slate-300 uppercase tracking-wider flex items-center gap-2">
+              <Car className="w-4 h-4 text-indigo-400" />
+              Select Vehicle Type
+            </label>
+            <select 
+              className="w-full bg-slate-900 border border-slate-700 text-slate-200 rounded-lg p-3 outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition"
+              value={selectedVehicle.id}
+              onChange={(e) => setSelectedVehicle(VEHICLES.find(v => v.id === e.target.value))}
+            >
+              {VEHICLES.map(v => (
+                <option key={v.id} value={v.id}>{v.label}</option>
+              ))}
+            </select>
+            <p className="text-xs text-slate-500">
+              Pricing and labor rates are customized based on the vehicle model and tier (Hatchback/SUV).
+            </p>
+          </div>
+
+          <div className="glass-panel p-8 w-full flex flex-col items-center justify-center min-h-[400px]">
           
           {!preview ? (
             <label className="w-full flex-1 flex flex-col items-center justify-center border-2 border-dashed border-slate-600 rounded-xl hover:border-indigo-500 hover:bg-slate-800/50 transition-all cursor-pointer group">
               <UploadCloud className="w-16 h-16 text-slate-500 group-hover:text-indigo-400 mb-4 transition-colors" />
-              <span className="text-lg font-medium text-slate-300">Click or drag image to upload</span>
+              <span className="text-lg font-medium text-slate-300">Click, drag, or paste image to upload</span>
               <span className="text-sm text-slate-500 mt-2">JPEG, PNG up to 10MB</span>
               <input type="file" accept="image/*" className="hidden" onChange={handleFileChange} />
             </label>
@@ -125,6 +181,7 @@ function App() {
               <p>{error}</p>
             </div>
           )}
+          </div>
         </div>
 
         {/* Results Column */}
@@ -153,16 +210,28 @@ function App() {
           {!loading && result && (
             <>
               {/* Overall Recommendation */}
-              <div className={`glass-panel p-6 border-2 flex items-center gap-6 ${getRecommendationColor(result.overall_recommendation)}`}>
-                <div className="shrink-0">
-                  {getRecommendationIcon(result.overall_recommendation)}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className={`glass-panel p-6 border-2 flex items-center gap-6 ${getRecommendationColor(result.overall_recommendation)}`}>
+                  <div className="shrink-0">
+                    {getRecommendationIcon(result.overall_recommendation)}
+                  </div>
+                  <div>
+                    <h2 className="text-sm font-bold uppercase tracking-wider opacity-80 mb-1">Overall Verdict</h2>
+                    <p className="text-3xl font-black uppercase tracking-tight">
+                      {result.overall_recommendation}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <h2 className="text-sm font-bold uppercase tracking-wider opacity-80 mb-1">Overall Verdict</h2>
-                  <p className="text-3xl font-black uppercase tracking-tight">
-                    {result.overall_recommendation}
-                  </p>
-                </div>
+
+                {result.total_cost_estimate && result.total_cost_estimate.max > 0 && (
+                  <div className="glass-panel p-6 border-2 border-indigo-500/30 bg-indigo-900/20 flex flex-col justify-center">
+                    <h2 className="text-sm font-bold uppercase tracking-wider text-indigo-300 mb-1">Estimated Total Cost</h2>
+                    <p className="text-2xl font-black text-indigo-100">
+                      ₹{result.total_cost_estimate.min.toLocaleString()} – ₹{result.total_cost_estimate.max.toLocaleString()}
+                    </p>
+                    <p className="text-xs text-indigo-400 mt-1">Data Quality: {result.price_data_quality?.toUpperCase()}</p>
+                  </div>
+                )}
               </div>
 
               {/* Performance Metrics */}
@@ -216,7 +285,35 @@ function App() {
                         {getRecommendationIcon(damage.recommendation)}
                         {damage.recommendation}
                       </div>
-                      <p className="text-sm opacity-90 leading-relaxed">{damage.reason}</p>
+                      <p className="text-sm opacity-90 leading-relaxed mb-3">{damage.reason}</p>
+                      
+                      {damage.cost_estimate && (
+                        <div className="bg-black/30 rounded-lg p-3 text-sm">
+                          {damage.cost_estimate.total_cost && damage.cost_estimate.total_cost.max > 0 ? (
+                            <div className="grid grid-cols-2 gap-2 text-slate-300">
+                              {damage.cost_estimate.part_cost?.max > 0 && (
+                                <>
+                                  <span className="text-slate-400">Part Cost:</span>
+                                  <span className="text-right">₹{damage.cost_estimate.part_cost.min.toLocaleString()} – ₹{damage.cost_estimate.part_cost.max.toLocaleString()}</span>
+                                </>
+                              )}
+                              {damage.cost_estimate.repair_cost?.max > 0 && (
+                                <>
+                                  <span className="text-slate-400">Repair Cost:</span>
+                                  <span className="text-right">₹{damage.cost_estimate.repair_cost.min.toLocaleString()} – ₹{damage.cost_estimate.repair_cost.max.toLocaleString()}</span>
+                                </>
+                              )}
+                              <span className="text-slate-400">Labor:</span>
+                              <span className="text-right">₹{damage.cost_estimate.labor_cost.min.toLocaleString()} – ₹{damage.cost_estimate.labor_cost.max.toLocaleString()}</span>
+                              <div className="col-span-2 border-t border-slate-700/50 my-1"></div>
+                              <span className="font-bold text-indigo-300">Total:</span>
+                              <span className="font-bold text-indigo-300 text-right">₹{damage.cost_estimate.total_cost.min.toLocaleString()} – ₹{damage.cost_estimate.total_cost.max.toLocaleString()}</span>
+                            </div>
+                          ) : (
+                            <p className="text-slate-400 italic text-xs">{damage.cost_estimate.message}</p>
+                          )}
+                        </div>
+                      )}
                     </div>
                   </div>
                 ))}
