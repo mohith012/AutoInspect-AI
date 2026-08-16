@@ -20,4 +20,17 @@ env/
 .env
 
 # Large model weights (optional, uncomment if > 100MB)
-# *.pt
+*.pt
+*.pth
+
+# Stage 4 Severity Dataset
+severity_dataset.zip
+severity_dataset/
+
+# Test Outputs and Uploads
+results/
+stage5_full_pipeline/results/
+stage5_full_pipeline/temp.json
+stage6_decision_engine/results/
+backend/uploads/
+backend/static/results/
