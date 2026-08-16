@@ -1,0 +1,17 @@
+# Severity Mapping Configuration
+# Based on the selected Roboflow Universe dataset (Vehicle Damage Severity Classification)
+# The dataset natively uses 'minor', 'moderate', and 'severe' labels, which perfectly
+# aligns with our target taxonomy. Thus, this is a 1:1 mapping.
+
+dataset_label:
+  minor: minor
+  moderate: moderate
+  severe: severe
+
+# Justification:
+# The source dataset provides annotations already categorized into minor, moderate, and severe.
+# A visual inspection of these classes typically shows:
+# - minor: surface scratches, very small dents, no structural deformation.
+# - moderate: deeper dents, larger scrapes, partial part dislocation.
+# - severe: major structural damage, shattered components, heavy deformation.
+# This aligns exactly with the definitions required for Stage 4.
