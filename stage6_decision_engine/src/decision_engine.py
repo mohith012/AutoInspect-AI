@@ -100,6 +100,15 @@ class DecisionEngine:
                 "requires_professional_inspection": True
             }
 
+        # 2.5 Heuristic Filtering (e.g. Reflections)
+        if part == "windshield" and damage == "glass_shatter" and dam_conf < 0.85:
+            return {
+                "recommendation": "inspect",
+                "reason": "Low confidence glass shatter detection. This is often caused by glare or tree reflections on the windshield.",
+                "rule_used": "heuristic.reflection_filtering",
+                "requires_professional_inspection": True
+            }
+
         # 3. Apply Decision Matrix
         group_name = self.part_to_group.get(part)
         
