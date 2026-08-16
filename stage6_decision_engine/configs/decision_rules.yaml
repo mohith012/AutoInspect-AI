@@ -1,0 +1,69 @@
+thresholds:
+  damage_confidence_min: 0.30
+  part_confidence_min: 0.30
+  mapping_score_min: 0.30
+  severity_confidence_min: 0.40
+
+# 1. Bumpers, Doors, Hood, Trunk, Tailgate, Body (Metal/Plastic Panels)
+body_panels:
+  parts: ["front_bumper", "rear_bumper", "door", "hood", "trunk", "tailgate", "body"]
+  dent:
+    minor: repair
+    moderate: repair
+    severe: inspect
+  scratch:
+    minor: repair
+    moderate: repair
+    severe: inspect
+  crack:
+    minor: inspect
+    moderate: replace
+    severe: replace
+
+# 2. Glass Components
+glass:
+  parts: ["windshield", "rear_windshield"]
+  crack:
+    minor: inspect
+    moderate: replace
+    severe: replace
+  glass_shatter:
+    minor: replace
+    moderate: replace
+    severe: replace
+  scratch:
+    minor: repair
+    moderate: inspect
+    severe: replace
+
+# 3. Lights & Mirrors
+lights_mirrors:
+  parts: ["headlight", "taillight", "side_mirror"]
+  lamp_broken:
+    minor: replace
+    moderate: replace
+    severe: replace
+  glass_shatter:
+    minor: replace
+    moderate: replace
+    severe: replace
+  crack:
+    minor: inspect
+    moderate: replace
+    severe: replace
+  scratch:
+    minor: repair
+    moderate: inspect
+    severe: replace
+
+# 4. Tires
+tires:
+  parts: ["tire"]
+  tire_flat:
+    minor: inspect
+    moderate: replace
+    severe: replace
+  crack:
+    minor: replace
+    moderate: replace
+    severe: replace
