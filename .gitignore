@@ -1,8 +1,6 @@
 # Datasets and compressed files
-CarDD_release.zip
-CarDD_release/
-cardd_yolo/
 data/
+*.zip
 
 # Python caches and compiled files
 __pycache__/
@@ -23,14 +21,8 @@ env/
 *.pt
 *.pth
 
-# Stage 4 Severity Dataset
-severity_dataset.zip
-severity_dataset/
-
 # Test Outputs and Uploads
-results/
-stage5_full_pipeline/results/
-stage5_full_pipeline/temp.json
-stage6_decision_engine/results/
-backend/uploads/
-backend/static/results/
+outputs/
+apps/backend/uploads/
+apps/backend/static/results/
+stages/*/results/
