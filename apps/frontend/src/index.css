@@ -4,17 +4,32 @@
 
 @layer base {
   body {
-    @apply bg-slate-900 text-slate-100 min-h-screen font-sans;
-    background-image: radial-gradient(circle at 50% -20%, #1e1b4b, #0f172a);
+    @apply bg-white text-black min-h-screen font-sans selection:bg-red-100 selection:text-red-900;
   }
 }
 
 @layer components {
   .glass-panel {
-    @apply bg-slate-800/50 backdrop-blur-md border border-slate-700/50 shadow-xl rounded-2xl;
+    @apply bg-white border border-neutral-200 shadow-sm rounded-2xl overflow-hidden;
   }
   
   .glass-card {
-    @apply bg-slate-800/80 backdrop-blur-sm border border-slate-700/50 rounded-xl transition-all duration-300;
+    @apply bg-white border border-neutral-200 rounded-xl transition-all duration-200 hover:shadow-md hover:border-neutral-300;
   }
+  
+  .btn-primary {
+    @apply bg-red-600 hover:bg-red-700 active:bg-red-800 text-white font-medium rounded-lg px-5 py-2.5 transition-colors focus:ring-4 focus:ring-red-600/20 outline-none disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2;
+  }
+
+  .btn-secondary {
+    @apply bg-white hover:bg-neutral-50 border border-neutral-200 text-black font-medium rounded-lg px-5 py-2.5 transition-colors focus:ring-4 focus:ring-neutral-200/50 outline-none flex items-center justify-center gap-2;
+  }
+}
+
+.fade-in { 
+  animation: fadeIn 0.3s ease-in-out; 
+} 
+@keyframes fadeIn { 
+  from { opacity: 0; transform: translateY(5px); } 
+  to { opacity: 1; transform: translateY(0); } 
 }
