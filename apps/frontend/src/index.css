@@ -4,32 +4,54 @@
 
 @layer base {
   body {
-    @apply bg-white text-black min-h-screen font-sans selection:bg-red-100 selection:text-red-900;
+    @apply bg-white text-gray-700 min-h-screen font-sans antialiased selection:bg-primary/20 selection:text-primary;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display font-bold text-dark;
   }
 }
 
 @layer components {
   .glass-panel {
-    @apply bg-white border border-neutral-200 shadow-sm rounded-2xl overflow-hidden;
+    @apply bg-white border border-gray-100 shadow-sm rounded-xl overflow-hidden;
   }
   
   .glass-card {
-    @apply bg-white border border-neutral-200 rounded-xl transition-all duration-200 hover:shadow-md hover:border-neutral-300;
+    @apply bg-white border-b-2 border-transparent shadow-[0_4px_20px_-10px_rgba(0,0,0,0.1)] rounded-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_8px_30px_-10px_rgba(246,33,33,0.2)] hover:border-primary relative overflow-hidden;
   }
   
   .btn-primary {
-    @apply bg-red-600 hover:bg-red-700 active:bg-red-800 text-white font-medium rounded-lg px-5 py-2.5 transition-colors focus:ring-4 focus:ring-red-600/20 outline-none disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2;
+    @apply bg-primary hover:bg-primary-hover text-white font-display font-semibold uppercase tracking-wider rounded px-8 py-3 transition-all duration-300 focus:ring-4 focus:ring-primary/20 outline-none disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2;
   }
 
   .btn-secondary {
-    @apply bg-white hover:bg-neutral-50 border border-neutral-200 text-black font-medium rounded-lg px-5 py-2.5 transition-colors focus:ring-4 focus:ring-neutral-200/50 outline-none flex items-center justify-center gap-2;
+    @apply bg-transparent hover:bg-primary border-2 border-primary text-primary hover:text-white font-display font-semibold uppercase tracking-wider rounded px-8 py-3 transition-all duration-300 focus:ring-4 focus:ring-primary/20 outline-none flex items-center justify-center gap-2;
+  }
+
+  .section-title {
+    @apply text-3xl md:text-4xl font-extrabold uppercase mb-4 relative inline-block;
+  }
+  
+  .section-title::after {
+    content: '';
+    @apply absolute -bottom-2 left-0 w-12 h-1 bg-primary;
+  }
+  
+  .section-title-center {
+    @apply text-3xl md:text-4xl font-extrabold uppercase mb-4 relative flex flex-col items-center text-center;
+  }
+  
+  .section-title-center::after {
+    content: '';
+    @apply block mt-2 w-12 h-1 bg-primary mx-auto;
   }
 }
 
 .fade-in { 
-  animation: fadeIn 0.3s ease-in-out; 
+  animation: fadeIn 0.4s ease-out forwards; 
 } 
 @keyframes fadeIn { 
-  from { opacity: 0; transform: translateY(5px); } 
+  from { opacity: 0; transform: translateY(10px); } 
   to { opacity: 1; transform: translateY(0); } 
 }
