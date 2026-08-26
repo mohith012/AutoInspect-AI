@@ -1,5 +1,5 @@
 import React from 'react';
-import { Upload, Scan, CarFront, AlertCircle, Wrench, IndianRupee, ArrowDown } from 'lucide-react';
+import { Upload, Scan, CarFront, AlertCircle, Wrench, IndianRupee } from 'lucide-react';
 
 const STEPS = [
   { num: '01', title: 'Upload Photo', icon: Upload, desc: 'Upload a clear photo of the damaged vehicle.' },
@@ -12,27 +12,27 @@ const STEPS = [
 
 export default function HowItWorks() {
   return (
-    <section id="how-it-works" className="py-20 bg-white border-t border-neutral-200">
-      <div className="max-w-6xl mx-auto px-6">
+    <section id="how-it-works" className="py-24 bg-gray-50">
+      <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-16">
-          <h2 className="font-display text-3xl font-bold text-neutral-900 mb-4">How AutoInspect AI Works</h2>
-          <p className="text-neutral-600 max-w-2xl mx-auto">
+          <h2 className="section-title-center">How AutoInspect AI Works</h2>
+          <p className="text-gray-500 max-w-2xl mx-auto mt-6">
             Our pipeline combines multiple computer vision models to provide a comprehensive analysis in seconds.
           </p>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 relative">
           {STEPS.map((step, idx) => (
-            <div key={idx} className="relative glass-panel p-6 flex flex-col h-full group hover:-tranneutral-y-1 hover:shadow-md hover:border-red-200 transition-all cursor-default">
-              <div className="text-5xl font-black text-neutral-100 absolute top-4 right-4 z-0 pointer-events-none transition-colors group-hover:text-red-50">
+            <div key={idx} className="glass-card p-8 flex flex-col h-full group cursor-default bg-white">
+              <div className="text-6xl font-display font-black text-gray-100 absolute top-4 right-4 z-0 pointer-events-none transition-colors duration-300 group-hover:text-primary/10">
                 {step.num}
               </div>
               <div className="relative z-10 flex flex-col h-full">
-                <div className="w-12 h-12 rounded-xl bg-red-50 text-red-600 flex items-center justify-center mb-4">
-                  <step.icon className="w-6 h-6" />
+                <div className="w-14 h-14 bg-gray-100 text-primary flex items-center justify-center mb-6 transition-colors duration-300 group-hover:bg-primary group-hover:text-white rounded-br-2xl">
+                  <step.icon className="w-7 h-7" />
                 </div>
-                <h3 className="text-lg font-semibold text-neutral-900 mb-2">{step.title}</h3>
-                <p className="text-sm text-neutral-600">{step.desc}</p>
+                <h3 className="text-xl font-display font-bold text-dark uppercase tracking-wide mb-3">{step.title}</h3>
+                <p className="text-gray-500 leading-relaxed">{step.desc}</p>
               </div>
             </div>
           ))}
