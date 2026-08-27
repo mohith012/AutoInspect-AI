@@ -1,13 +1,28 @@
 import React from 'react';
 import { ShieldCheck, MapPin, Phone, Mail, ArrowRight } from 'lucide-react';
 
-export default function Footer() {
+export default function Footer({ onNavigate }) {
+  const handleNav = (e, sectionId, targetView = 'home') => {
+    e.preventDefault();
+    if (onNavigate) {
+      onNavigate(targetView);
+    }
+    if (sectionId) {
+      setTimeout(() => {
+        const el = document.getElementById(sectionId);
+        if (el) el.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
   return (
     <footer className="w-full bg-dark text-gray-400 pt-16 pb-8 border-t-4 border-primary mt-auto">
       <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
         {/* About */}
         <div>
-          <a href="#" className="flex items-center gap-2 mb-6">
+          <a href="#" onClick={(e) => handleNav(e, null, 'home')} className="flex items-center gap-2 mb-6">
             <ShieldCheck className="w-8 h-8 text-primary" />
             <span className="font-display text-2xl font-extrabold text-white tracking-tight uppercase">AutoInspect <span className="text-primary">AI</span></span>
           </a>
@@ -20,10 +35,10 @@ export default function Footer() {
         <div>
           <h4 className="text-white font-display font-bold uppercase mb-6 relative inline-block after:content-[''] after:absolute after:-bottom-2 after:left-0 after:w-8 after:h-0.5 after:bg-primary">Quick Links</h4>
           <ul className="space-y-3 text-sm">
-            <li><a href="#" className="hover:text-primary transition flex items-center gap-2"><ArrowRight className="w-3 h-3 text-primary" /> Home</a></li>
-            <li><a href="#" className="hover:text-primary transition flex items-center gap-2"><ArrowRight className="w-3 h-3 text-primary" /> How It Works</a></li>
-            <li><a href="#" className="hover:text-primary transition flex items-center gap-2"><ArrowRight className="w-3 h-3 text-primary" /> Damage Types</a></li>
-            <li><a href="#" className="hover:text-primary transition flex items-center gap-2"><ArrowRight className="w-3 h-3 text-primary" /> Get an Estimate</a></li>
+            <li><a href="#" onClick={(e) => handleNav(e, null, 'home')} className="hover:text-primary transition flex items-center gap-2"><ArrowRight className="w-3 h-3 text-primary" /> Home</a></li>
+            <li><a href="#how-it-works" onClick={(e) => handleNav(e, 'how-it-works', 'home')} className="hover:text-primary transition flex items-center gap-2"><ArrowRight className="w-3 h-3 text-primary" /> How It Works</a></li>
+            <li><a href="#damage-types" onClick={(e) => handleNav(e, 'damage-types', 'home')} className="hover:text-primary transition flex items-center gap-2"><ArrowRight className="w-3 h-3 text-primary" /> Damage Types</a></li>
+            <li><a href="#" onClick={(e) => handleNav(e, null, 'inspect')} className="hover:text-primary transition flex items-center gap-2"><ArrowRight className="w-3 h-3 text-primary" /> Get an Estimate</a></li>
           </ul>
         </div>
         
@@ -31,10 +46,10 @@ export default function Footer() {
         <div>
           <h4 className="text-white font-display font-bold uppercase mb-6 relative inline-block after:content-[''] after:absolute after:-bottom-2 after:left-0 after:w-8 after:h-0.5 after:bg-primary">Services</h4>
           <ul className="space-y-3 text-sm">
-            <li><a href="#" className="hover:text-primary transition flex items-center gap-2"><ArrowRight className="w-3 h-3 text-primary" /> Dent Detection</a></li>
-            <li><a href="#" className="hover:text-primary transition flex items-center gap-2"><ArrowRight className="w-3 h-3 text-primary" /> Scratch Analysis</a></li>
-            <li><a href="#" className="hover:text-primary transition flex items-center gap-2"><ArrowRight className="w-3 h-3 text-primary" /> Glass Damage</a></li>
-            <li><a href="#" className="hover:text-primary transition flex items-center gap-2"><ArrowRight className="w-3 h-3 text-primary" /> Cost Estimation</a></li>
+            <li><a href="#damage-types" onClick={(e) => handleNav(e, 'damage-types', 'home')} className="hover:text-primary transition flex items-center gap-2"><ArrowRight className="w-3 h-3 text-primary" /> Dent Detection</a></li>
+            <li><a href="#damage-types" onClick={(e) => handleNav(e, 'damage-types', 'home')} className="hover:text-primary transition flex items-center gap-2"><ArrowRight className="w-3 h-3 text-primary" /> Scratch Analysis</a></li>
+            <li><a href="#damage-types" onClick={(e) => handleNav(e, 'damage-types', 'home')} className="hover:text-primary transition flex items-center gap-2"><ArrowRight className="w-3 h-3 text-primary" /> Glass Damage</a></li>
+            <li><a href="#" onClick={(e) => handleNav(e, null, 'inspect')} className="hover:text-primary transition flex items-center gap-2"><ArrowRight className="w-3 h-3 text-primary" /> Cost Estimation</a></li>
           </ul>
         </div>
         
@@ -63,8 +78,8 @@ export default function Footer() {
           &copy; {new Date().getFullYear()} AutoInspect AI. All Rights Reserved.
         </div>
         <div className="flex gap-6">
-          <a href="#" className="hover:text-primary transition">Privacy Policy</a>
-          <a href="#" className="hover:text-primary transition">Terms of Service</a>
+          <a href="#" onClick={(e) => e.preventDefault()} className="hover:text-primary transition">Privacy Policy</a>
+          <a href="#" onClick={(e) => e.preventDefault()} className="hover:text-primary transition">Terms of Service</a>
         </div>
       </div>
     </footer>

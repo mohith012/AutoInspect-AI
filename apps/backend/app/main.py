@@ -6,6 +6,11 @@ import os
 import shutil
 import uuid
 import sys
+import urllib.request
+import urllib.parse
+import json
+import math
+from fastapi import Query
 
 # Ensure project root is in sys.path to load pipeline modules
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -76,8 +81,88 @@ async def analyze_image(
         
         return JSONResponse(content=result_json)
         
+    except ValueError as ve:
+        return JSONResponse(status_code=400, content={"error": str(ve)})
     except Exception as e:
         return JSONResponse(status_code=500, content={"error": str(e)})
+
+def haversine(lat1, lon1, lat2, lon2):
+    R = 6371.0
+    dLat = math.radians(lat2 - lat1)
+    dLon = math.radians(lon2 - lon1)
+    a = math.sin(dLat/2)**2 + math.cos(math.radians(lat1)) * math.cos(math.radians(lat2)) * math.sin(dLon/2)**2
+    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1-a))
+    return R * c
+
+@app.get("/api/nearby-shops")
+async def get_nearby_shops(
+    lat: float = Query(...),
+    lon: float = Query(...),
+    radius: int = Query(5000)
+):
+    overpass_url = "https://overpass-api.de/api/interpreter"
+    overpass_query = f"""
+    [out:json][timeout:25];
+    (
+      node["shop"="car_repair"](around:{radius},{lat},{lon});
+      way["shop"="car_repair"](around:{radius},{lat},{lon});
+      node["shop"="tyres"](around:{radius},{lat},{lon});
+      way["shop"="tyres"](around:{radius},{lat},{lon});
+    );
+    out center;
+    """
+    try:
+        import ssl
+        ssl_context = ssl._create_unverified_context()
+        req = urllib.request.Request(
+            overpass_url, 
+            data=overpass_query.encode('utf-8'),
+            headers={'User-Agent': 'AutoInspect AI / 1.0'}
+        )
+        with urllib.request.urlopen(req, context=ssl_context) as response:
+            data = json.loads(response.read().decode('utf-8'))
+            
+        shops = []
+        for element in data.get("elements", []):
+            tags = element.get("tags", {})
+            name = tags.get("name", "Unknown Repair Shop")
+            shop_lat = element.get("lat") or element.get("center", {}).get("lat")
+            shop_lon = element.get("lon") or element.get("center", {}).get("lon")
+            
+            if not shop_lat or not shop_lon: continue
+            
+            dist_km = haversine(lat, lon, shop_lat, shop_lon)
+            
+            addr = []
+            if tags.get("addr:street"): addr.append(tags.get("addr:street"))
+            if tags.get("addr:city"): addr.append(tags.get("addr:city"))
+            address = ", ".join(addr) if addr else "Address not provided"
+            
+            phone = tags.get("phone") or tags.get("contact:phone")
+            
+            category = "Auto Repair"
+            if tags.get("shop") == "tyres": category = "Tyre Shop"
+            
+            shops.append({
+                "id": element["id"],
+                "name": name,
+                "lat": shop_lat,
+                "lon": shop_lon,
+                "distance": round(dist_km, 2),
+                "address": address,
+                "phone": phone,
+                "category": category,
+                "rating": None,
+                "reviews": None,
+                "open_status": tags.get("opening_hours")
+            })
+            
+        shops.sort(key=lambda x: x["distance"])
+        return JSONResponse(content={"shops": shops})
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return JSONResponse(status_code=500, content={"error": str(e) or repr(e)})
 
 if __name__ == "__main__":
     import uvicorn

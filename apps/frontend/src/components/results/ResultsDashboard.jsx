@@ -1,9 +1,10 @@
 import React from 'react';
-import { ArrowLeft, Download } from 'lucide-react';
+import { ArrowLeft, Download, ShieldCheck } from 'lucide-react';
 import InspectionSummary from './InspectionSummary';
 import AnnotatedImage from './AnnotatedImage';
 import DamageCard from './DamageCard';
 import CostBreakdown from './CostBreakdown';
+import NearbyShops from './NearbyShops';
 
 export default function ResultsDashboard({ result, onReset }) {
   if (!result) return null;
@@ -92,6 +93,7 @@ export default function ResultsDashboard({ result, onReset }) {
           )}
         </div>
       </div>
+      <NearbyShops assessmentResult={result} />
     </div>
   );
 }

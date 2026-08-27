@@ -3,6 +3,7 @@ import os
 import time
 from pathlib import Path
 from PIL import Image
+from ultralytics import YOLO
 
 # Ensure the root project directory is in the path
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -35,6 +36,14 @@ def get_severity_predictor():
     if _severity_predictor is None:
         _severity_predictor = SeverityPredictor(SEVERITY_MODEL_PATH, threshold=SEVERITY_THRESHOLD)
     return _severity_predictor
+
+_vehicle_detector = None
+def get_vehicle_detector():
+    global _vehicle_detector
+    if _vehicle_detector is None:
+        # Load base COCO model for generic object detection
+        _vehicle_detector = YOLO('yolov8n.pt')
+    return _vehicle_detector
 
 def extract_damage_crop(image, bbox, padding_ratio=0.15, save_path=None):
     """
@@ -89,6 +98,35 @@ def analyze_vehicle_damage(image_path: str, save_crops=True, vehicle_info: dict 
         raise FileNotFoundError(f"Image not found: {image_path}")
     
     image_name = os.path.basename(image_path)
+    
+    # --- VEHICLE VALIDATION CHECK ---
+    t_val_start = time.time()
+    detector = get_vehicle_detector()
+    val_results = detector(image_path, verbose=False)
+    
+    # COCO classes: 2=car, 3=motorcycle, 5=bus, 7=truck
+    valid_classes = [2, 3, 5, 7]
+    vehicle_found = False
+    other_object_found = False
+    
+    for r in val_results:
+        for box in r.boxes:
+            cls_id = int(box.cls[0].item())
+            conf = float(box.conf[0].item())
+            if cls_id in valid_classes and conf > 0.25:
+                vehicle_found = True
+                break
+            elif conf > 0.4:
+                other_object_found = True
+        if vehicle_found:
+            break
+            
+    if not vehicle_found:
+        if other_object_found:
+            raise ValueError("Please upload a damaged car image.")
+        print("Warning: No full vehicle detected (COCO). Proceeding anyway in case it's a close-up.")
+    t_val_end = time.time()
+    # --------------------------------
     
     # 1. Run Damage Detection (Lowered threshold to catch difficult shatters like side windows)
     t_m1_start = time.time()
@@ -198,6 +236,7 @@ def analyze_vehicle_damage(image_path: str, save_crops=True, vehicle_info: dict 
     
     # Performance metrics
     perf = {
+        "Validation (ms)": round((t_val_end - t_val_start) * 1000, 1),
         "Model 1 (ms)": round((t_m1_end - t_m1_start) * 1000, 1),
         "Model 2 (ms)": round((t_m2_end - t_m2_start) * 1000, 1),
         "Mapping (ms)": round((t_map_end - t_map_start) * 1000, 1),

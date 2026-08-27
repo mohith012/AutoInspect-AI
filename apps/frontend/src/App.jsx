@@ -4,6 +4,7 @@ import Footer from './components/layout/Footer';
 import Hero from './components/home/Hero';
 import HowItWorks from './components/home/HowItWorks';
 import WhatWeDetect from './components/home/WhatWeDetect';
+import HelpFAQ from './components/home/HelpFAQ';
 import VehicleDetailsForm from './components/inspection/VehicleDetailsForm';
 import PhotoRequirements from './components/inspection/PhotoRequirements';
 import UploadArea from './components/inspection/UploadArea';
@@ -100,7 +101,14 @@ export default function App() {
         body: formData
       });
       
-      if (!response.ok) throw new Error('Failed to analyze image');
+      if (!response.ok) {
+        let errMessage = 'Failed to analyze image';
+        try {
+          const errorData = await response.json();
+          if (errorData.error) errMessage = errorData.error;
+        } catch (e) {}
+        throw new Error(errMessage);
+      }
       
       const data = await response.json();
       setResult(data);
@@ -121,7 +129,7 @@ export default function App() {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <Header />
+      <Header onNavigate={setView} />
       
       <main className="flex-1 w-full pb-20">
         {view === 'home' && (
@@ -129,6 +137,7 @@ export default function App() {
             <Hero onStart={() => setView('inspect')} />
             <HowItWorks />
             <WhatWeDetect />
+            <HelpFAQ />
           </div>
         )}
 
@@ -176,7 +185,7 @@ export default function App() {
         )}
       </main>
 
-      <Footer />
+      <Footer onNavigate={setView} />
     </div>
   );
 }
