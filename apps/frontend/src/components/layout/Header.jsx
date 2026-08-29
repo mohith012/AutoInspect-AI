@@ -1,5 +1,5 @@
 import React from 'react';
-import { ShieldCheck, Phone, Mail, Clock } from 'lucide-react';
+import { ShieldCheck } from 'lucide-react';
 
 export default function Header({ onNavigate }) {
   const handleNav = (e, sectionId, targetView = 'home') => {
@@ -17,19 +17,6 @@ export default function Header({ onNavigate }) {
 
   return (
     <>
-      {/* Top Bar */}
-      <div className="bg-dark text-gray-300 py-2 hidden md:block">
-        <div className="max-w-7xl mx-auto px-6 flex justify-between items-center text-xs font-display tracking-wide">
-          <div className="flex gap-6">
-            <span className="flex items-center gap-2"><Phone className="w-3 h-3 text-primary" /> +1 (800) 123-4567</span>
-            <span className="flex items-center gap-2"><Mail className="w-3 h-3 text-primary" /> support@autoinspect.ai</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <Clock className="w-3 h-3 text-primary" /> Mon - Sat: 8:00 AM - 6:00 PM
-          </div>
-        </div>
-      </div>
-      
       {/* Main Nav */}
       <header className="w-full bg-white shadow-md sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
