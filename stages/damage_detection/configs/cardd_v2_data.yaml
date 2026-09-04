@@ -1,0 +1,14 @@
+names:
+- dent
+- scratch
+- crack
+- glass_shatter
+- lamp_broken
+- tire_flat
+nc: 6
+path: C:\Users\sango\OneDrive\Desktop\Car project
+test: data/real_world_test/images
+train:
+- data/cardd_yolo/train/images
+- data/hard_negatives/images/train
+val: data/cardd_yolo/val/images
