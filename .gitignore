@@ -26,3 +26,5 @@ outputs/
 apps/backend/uploads/
 apps/backend/static/results/
 stages/*/results/
+runs/
+ui-ux-pro-max-skill/
